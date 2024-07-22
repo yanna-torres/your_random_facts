@@ -1,0 +1,1 @@
+https://uselessfacts.jsph.pl/
