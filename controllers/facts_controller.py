@@ -2,6 +2,7 @@ from flask import jsonify, Blueprint, request
 import requests
 import datetime
 from models.fact import RandomFact
+from repository.facts_dao import FactDAO
 from repository.user_dao import UserDAO
 
 fact_bp = Blueprint('facts', __name__)
@@ -25,16 +26,28 @@ def get_random_fact():
         return jsonify({'error': 'Error getting random fact'}), 500
     
 @fact_bp.route('/facts/save', methods=['POST'])
-def save_fact(username: str):
+def save_fact():
     body = request.get_json()
-    username = body.get('username')
-    fact = body.get('fact')
+    if 'username' not in body or 'fact' not in body:
+        return jsonify({'error': 'Missing username or fact'}), 400
+    username = body['username']
+    fact = body['fact']
     user = UserDAO().get_user_by_username(username)
+    print(user)
     if user is None:
         return jsonify({'error': 'User not found'}), 404
     
     # Save fact to database
-    fact_object = RandomFact(user.id, fact.get('id'), str(datetime.datetime.now()), fact.get('text'), fact.get('source'))
-    
-    
+    fact_object = RandomFact(user.id, fact['id'], str(datetime.datetime.now()), fact['text'], fact['source'])
+    saved = FactDAO().save_fact(fact_object)
+    if not saved:
+        return jsonify({'error': 'Error saving fact'}), 500
     return jsonify({'message': 'Fact saved'}), 201
+
+@fact_bp.route('/facts/<username>', methods=['GET'])
+def get_facts_by_user(username: str):
+    user = UserDAO().get_user_by_username(username)
+    if user is None:
+        return jsonify({'error': 'User not found'}), 404
+    facts = FactDAO().get_facts_by_user(user.id)
+    return jsonify([rfact.__dict__ for rfact in facts])
