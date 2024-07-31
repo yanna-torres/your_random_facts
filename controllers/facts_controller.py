@@ -1,9 +1,11 @@
-from flask import jsonify, Blueprint, request
+from flask import jsonify, Blueprint, request, Response
 import requests
 import datetime
 from models.fact import RandomFact
 from repository.facts_dao import FactDAO
 from repository.user_dao import UserDAO
+from proto.fact_pb2 import FactList, Fact, Error 
+
 
 fact_bp = Blueprint('facts', __name__)
 
@@ -51,3 +53,24 @@ def get_facts_by_user(username: str):
         return jsonify({'error': 'User not found'}), 404
     facts = FactDAO().get_facts_by_user(user.id)
     return jsonify([rfact.__dict__ for rfact in facts])
+
+@fact_bp.route('/facts/proto/<username>', methods=['GET'])
+def get_facts_by_user_proto(username: str):
+    try:
+        user = UserDAO().get_user_by_username(username)
+        if user is None:
+            return jsonify({'error': 'User not found'}), 404
+        facts = FactDAO().get_facts_by_user(user.id)
+        fact_list = FactList()
+        for fact in facts:
+            print(fact.__str__()) 
+
+        for fact in facts:
+            f = fact_list.facts.add()
+            f.id = fact.fact_id
+            f.fact = fact.text
+            f.user_id = fact.user_id
+        return Response(fact_list.SerializeToString(), mimetype='application/octet-stream')
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'Error getting facts'}), 500

@@ -4,7 +4,6 @@ from repository.user_dao import UserDAO
 
 user_bp = Blueprint('users', __name__)
 
-
 @user_bp.route('/users', methods=['POST'])
 def register():
     data = request.get_json()

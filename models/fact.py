@@ -6,4 +6,7 @@ class RandomFact:
         self.date = date
         self.text = text
         self.source = source
+        
+    def __str__(self):
+        return f"RandomFact(user_id={self.user_id}, fact_id={self.fact_id}, date={self.date}, text={self.text}, source={self.source})"
 
