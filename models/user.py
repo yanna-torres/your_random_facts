@@ -4,3 +4,6 @@ class User:
         self.id = id
         self.name = name
         self.username = username
+
+    def __str__(self):
+        return f'"name": "{self.name}", "username": "{self.username}"'
