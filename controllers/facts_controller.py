@@ -75,9 +75,10 @@ def get_facts_by_user_proto(username: str):
         print(e)
         return jsonify({'error': 'Error getting facts'}), 500
     
-@fact_bp.route('/facts/delete/<username>/<int:fact_id>', methods=['DELETE'])
+@fact_bp.route('/facts/<username>/<int:fact_id>', methods=['DELETE'])
 def delete_fact(username: str, fact_id: int):
     user = UserDAO().get_user_by_username(username)
+    print(username)
     if user is None:
         return jsonify({'error': 'User not found'}), 404
     deleted = FactDAO().delete_fact(fact_id, user.id)
