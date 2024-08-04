@@ -43,8 +43,8 @@ class UserDAO:
         try:
             with sqlite3.connect(self.db_path) as con:
                 cur = con.cursor()
-                cur.execute('INSERT INTO users (name, username) VALUES (?, ?) RETURNING id;', (user.name, user.username,))
-                user_id = cur.fetchone()[0]
+                cur.execute('INSERT INTO users (name, username) VALUES (?, ?)', (user.name, user.username))
+                user_id = cur.lastrowid 
                 con.commit()
                 return user_id
         except sqlite3.Error as e:
