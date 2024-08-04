@@ -38,13 +38,7 @@
     pip install -r requirements.txt
     ```
 
-3. Configure o banco de dados:
-
-    ```bash
-    python setup_db.py
-    ```
-
-4. Inicie a aplicação:
+3. Inicie a aplicação:
 
     ```bash
     python app.py
@@ -90,7 +84,7 @@
 
 ### Descobrir o Fato do Dia
 
-- **URL**: `/fact_of_the_day`
+- **URL**: `/facts/today`
 - **Método**: `GET`
 - **Resposta de Sucesso**:
     ```json

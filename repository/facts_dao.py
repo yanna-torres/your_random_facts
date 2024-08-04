@@ -29,3 +29,15 @@ class FactDAO:
             facts.append(fact)
         con.close()
         return facts
+    
+    def delete_fact(self, fact_id: int, user_id: int) -> bool:
+        try:
+            con = sqlite3.connect(self.db_path)
+            cur = con.cursor()
+            cur.execute('DELETE FROM facts WHERE fact_id = ? AND user_id = ?;', (fact_id, user_id))
+            con.commit()
+            con.close()
+            return True
+        except Exception as e:
+            print(e)
+            return False
