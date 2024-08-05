@@ -4,6 +4,8 @@
 
 **Your Random Facts API** é uma API simples que permite aos usuários criar perfis, descobrir fatos aleatórios, obter o fato do dia, salvar fatos interessantes e recuperar os fatos salvos. Os fatos são obtidos da API [Useless Facts](https://uselessfacts.jsph.pl/).
 
+O relatório completo da atividade pode ser encontrado em: [Relatório da Atividade - API REST e Representação de Dados](https://yanna-torres.notion.site/Relat-rio-da-Atividade-API-REST-e-Representa-o-de-Dados-7c3a856a8a40425198312037d783d230?pvs=4)
+
 ## Funcionalidades
 
 - **Criar Usuário**: Crie um usuário fornecendo um nome e um nome de usuário.
