@@ -5,6 +5,7 @@ from models.fact import RandomFact
 from repository.facts_dao import FactDAO
 from repository.user_dao import UserDAO
 from proto.fact_pb2 import FactList, Fact, Error 
+from dicttoxml import dicttoxml     
 
 
 fact_bp = Blueprint('facts', __name__)
@@ -70,7 +71,22 @@ def get_facts_by_user_proto(username: str):
             f.id = fact.fact_id
             f.fact = fact.text
             f.user_id = fact.user_id
-        return Response(fact_list.SerializeToString(), mimetype='application/octet-stream')
+        return Response(fact_list.SerializeToString(), mimetype='application/x-protobuf')
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'Error getting facts'}), 500
+
+
+@fact_bp.route('/facts/xml/<username>', methods=['GET'])
+def get_facts_by_user_xml(username: str):
+    try:
+        user = UserDAO().get_user_by_username(username)
+        if user is None:
+            return jsonify({'error': 'User not found'}), 404
+        facts = FactDAO().get_facts_by_user(user.id)
+        facts_dict = [rfact.__dict__ for rfact in facts]
+        xml = dicttoxml(facts_dict, custom_root='facts', attr_type=False)
+        return Response(xml, mimetype='application/xml')
     except Exception as e:
         print(e)
         return jsonify({'error': 'Error getting facts'}), 500
