@@ -1,0 +1,323 @@
+openapi: 3.0.3
+info:
+  title: Your Random Facts - OpenAPI 3.0
+  version: 1.0.0
+externalDocs:
+  description: Código-fonte
+  url: https://github.com/yanna-torres/your_random_facts
+servers:
+  - url: http://localhost:5000
+tags:
+  - name: facts
+    description: Operations about facts
+  - name: users
+    description: Operations about user
+paths:
+  /facts/today:
+    get:
+      tags:
+        - facts
+      summary: Get Fact of the Day
+      description: Retrieves the fact of the day from the external API.
+      responses:
+        '200':
+          description: Successfully retrieved the fact of the day.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  text:
+                    type: string
+                  source:
+                    type: string
+                  source_url:
+                    type: string
+                  language:
+                    type: string
+                  permalink:
+                    type: string
+        '500':
+          description: Error getting fact of the day.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /facts/random:
+    get:
+      tags:
+        - facts
+      summary: Get Random Fact
+      description: Retrieves a random fact from the external API.
+      responses:
+        '200':
+          description: Successfully retrieved a random fact.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  text:
+                    type: string
+                  source:
+                    type: string
+                  source_url:
+                    type: string
+                  language:
+                    type: string
+                  permalink:
+                    type: string
+        '500':
+          description: Error getting random fact.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /facts/save:
+    post:
+      tags:
+        - facts
+      summary: Save Fact
+      description: Saves a fact for a specific user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                fact:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    text:
+                      type: string
+                    source:
+                      type: string
+                    source_url:
+                      type: string
+                    language:
+                      type: string
+                    permalink:
+                      type: string
+      responses:
+        '201':
+          description: Fact saved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Missing username or fact.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '404':
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Error saving fact.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /facts/{username}:
+    get:
+      tags:
+        - facts
+      summary: Get Facts by User
+      description: Retrieves all facts saved by a specific user.
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved facts for the user.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    text:
+                      type: string
+                    source:
+                      type: string
+                    user_id:
+                      type: integer
+                    timestamp:
+                      type: string
+        '404':
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /facts/proto/{username}:
+    get:
+      tags:
+        - facts
+      summary: Get Facts by User (Proto)
+      description: Retrieves all facts saved by a specific user in Protobuf format.
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved facts for the user in Protobuf format.
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Error getting facts.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /facts/delete/{username}/{fact_id}:
+    delete:
+      tags:
+        - facts
+      summary: Delete Fact
+      description: Deletes a specific fact saved by a user.
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The username of the user.
+        - name: fact_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the fact to delete.
+      responses:
+        '200':
+          description: Fact deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Error deleting fact.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /users:
+    post:
+      tags:
+        - users
+      summary: Register User
+      description: Registers a new user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                name:
+                  type: string
+      responses:
+        '201':
+          description: User created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Missing username or name / Username already exists.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Error creating user.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
